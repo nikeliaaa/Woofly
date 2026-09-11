@@ -35,3 +35,14 @@ export async function deletePost(id) {
   if (!res.ok) throw new Error("Не удалось удалить пост");
   return res.json();
 }
+
+// Получить профиль пользователя
+export async function getUserProfile(id) {
+  const res = await fetch(`${API_URL}/api/users/${id}`);
+
+  if (!res.ok) {
+    throw new Error("Пользователь не найден");
+  }
+
+  return res.json();
+}
