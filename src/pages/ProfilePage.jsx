@@ -5,10 +5,12 @@ import PostSkeleton from "../components/PostSkeleton";
 import { Avatar, Card } from "@heroui/react";
 import PostCard from "../components/PostCard";
 import { toast } from "@heroui/react";
+import { useAuthStore } from "../store/authStore";
 
 export default function ProfilePage() {
   const { id } = useParams();
   const queryClient = useQueryClient();
+  const token = useAuthStore((state) => state.token);
 
   const {
     data: profile,
@@ -20,7 +22,7 @@ export default function ProfilePage() {
   });
 
   const deletePostMutation = useMutation({
-    mutationFn: (postId) => deletePost(postId),
+    mutationFn: (postId) => deletePost(postId, token),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user", id] });

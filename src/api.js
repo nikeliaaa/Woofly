@@ -12,25 +12,35 @@ export async function fetchPosts({ cursor } = {}) {
 }
 
 // Создать пост
-export async function createPost(text, images) {
+export async function createPost(text, images, token) {
   const formData = new FormData();
   formData.append("text", text);
   images.forEach((file) => formData.append("images", file));
 
   const res = await fetch(`${API_URL}/api/posts`, {
     method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     body: formData,
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Не удалось создать пост");
+
+  if (!res.ok) {
+    throw new Error(data.error || "Не удалось создать пост");
+  }
+
   return data;
 }
 
 // Удалить пост
-export async function deletePost(id) {
+export async function deletePost(id, token) {
   const res = await fetch(`${API_URL}/api/posts/${id}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
   if (!res.ok) throw new Error("Не удалось удалить пост");
   return res.json();
