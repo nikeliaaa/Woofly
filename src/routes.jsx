@@ -1,6 +1,6 @@
 import { redirect } from "react-router";
 import Layout from "./Layout";
-import Feed from "./components/Feed";
+import FeedPage from "./pages/FeedPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -23,7 +23,7 @@ export const routes = [
     children: [
       {
         index: true,
-        element: <Feed />,
+        element: <FeedPage />,
       },
       {
         path: "login",

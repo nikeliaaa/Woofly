@@ -2,9 +2,11 @@ import { Avatar, Button, Card, Dropdown, Label } from "@heroui/react";
 import { MoreVertical, Trash2 } from "lucide-react";
 import { API_URL } from "../api";
 import { Link } from "react-router";
+import { useAuthStore } from "../store/authStore";
 
 // Карточка одного поста
 export default function PostCard({ post, onDelete, isPending }) {
+  const user = useAuthStore((state) => state.user);
   const date = new Date(post.createdAt).toLocaleString("ru-RU");
   const avatarUrl =
     post.avatar ||
@@ -30,11 +32,12 @@ export default function PostCard({ post, onDelete, isPending }) {
           </Link>
         </Card.Header>
 
-        {!isPending && (
+        {!isPending && user?.id === post.userId && (
           <Dropdown>
             <Button isIconOnly size="sm" variant="ghost">
               <MoreVertical />
             </Button>
+
             <Dropdown.Popover>
               <Dropdown.Menu
                 onAction={(key) => {
