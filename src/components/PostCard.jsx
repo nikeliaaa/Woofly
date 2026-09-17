@@ -1,9 +1,12 @@
 import { Avatar, Button, Card, Dropdown, Label } from "@heroui/react";
 import { MoreVertical, Trash2 } from "lucide-react";
 import { API_URL } from "../api";
+import { Link } from "react-router";
+import { useAuthStore } from "../store/authStore";
 
 // Карточка одного поста
 export default function PostCard({ post, onDelete, isPending }) {
+  const user = useAuthStore((state) => state.user);
   const date = new Date(post.createdAt).toLocaleString("ru-RU");
   const avatarUrl =
     post.avatar ||
@@ -13,21 +16,28 @@ export default function PostCard({ post, onDelete, isPending }) {
     <Card className={`w-full gap-3 p-4 ${isPending ? "animate-pulse" : ""}`}>
       <div className="flex items-start justify-between">
         <Card.Header className="flex-row gap-4">
-          <Avatar>
-            <Avatar.Image alt={post.author} src={avatarUrl} />
-            <Avatar.Fallback>{post.author.charAt(0)}</Avatar.Fallback>
-          </Avatar>
-          <div>
-            <p className="text-sm font-semibold">{post.author}</p>
-            <p className="text-xs text-muted">{date}</p>
-          </div>
+          <Link
+            to={`/profile/${post.userId}`}
+            className="flex items-center gap-4"
+          >
+            <Avatar>
+              <Avatar.Image alt={post.author} src={avatarUrl} />
+              <Avatar.Fallback>{post.author.charAt(0)}</Avatar.Fallback>
+            </Avatar>
+
+            <div>
+              <p className="text-sm font-semibold">{post.author}</p>
+              <p className="text-xs text-muted">{date}</p>
+            </div>
+          </Link>
         </Card.Header>
 
-        {!isPending && (
+        {!isPending && user?.id === post.userId && (
           <Dropdown>
             <Button isIconOnly size="sm" variant="ghost">
               <MoreVertical />
             </Button>
+
             <Dropdown.Popover>
               <Dropdown.Menu
                 onAction={(key) => {
@@ -53,7 +63,10 @@ export default function PostCard({ post, onDelete, isPending }) {
         >
           {post.images.map((img, i) =>
             isPending ? (
-              <div key={i} className="h-48 w-full animate-pulse rounded-xl bg-default-200" />
+              <div
+                key={i}
+                className="h-48 w-full animate-pulse rounded-xl bg-default-200"
+              />
             ) : (
               <img
                 key={i}

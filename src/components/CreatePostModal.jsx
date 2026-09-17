@@ -3,6 +3,7 @@ import { Image, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost } from "../api";
+import { useAuthStore } from "../store/authStore";
 
 // Модалка создания нового поста
 export default function CreatePostModal({ isOpen, onClose }) {
@@ -11,10 +12,11 @@ export default function CreatePostModal({ isOpen, onClose }) {
   const [previews, setPreviews] = useState([]);
   const fileInputRef = useRef(null);
   const queryClient = useQueryClient(); // Доступ к кэшу
+  const token = useAuthStore((state) => state.token);
 
   const createPostMutation = useMutation({
     // Мутация для публикации поста
-    mutationFn: ({ text, files }) => createPost(text, files),
+    mutationFn: ({ text, files }) => createPost(text, files, token),
 
     onMutate: ({ text, previews }) => {
       // Optimistic UI

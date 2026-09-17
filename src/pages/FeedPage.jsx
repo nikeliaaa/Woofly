@@ -1,18 +1,20 @@
 import { toast } from "@heroui/react";
 import { useEffect, useRef } from "react";
-import PostCard from "./PostCard";
-import PostSkeleton from "./PostSkeleton";
+import PostCard from "../components/PostCard";
+import PostSkeleton from "../components/PostSkeleton";
 import {
   useInfiniteQuery,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query"; // Хук для бесконечной ленты, delete-запроса и доступа к кэшу
 import { fetchPosts, deletePost } from "../api"; // Получить посты (cursor-based pagination), удалить пост
+import { useAuthStore } from "../store/authStore";
 
-export default function Feed() {
+export default function FeedPage() {
   const toastIdRef = useRef(null);
   const sentinelRef = useRef(null);
   const queryClient = useQueryClient();
+  const token = useAuthStore((state) => state.token);
 
   const {
     // Деструктуризация объекта
@@ -41,7 +43,7 @@ export default function Feed() {
 
   const deletePostMutation = useMutation({
     // Удаление поста
-    mutationFn: (id) => deletePost(id),
+    mutationFn: (id) => deletePost(id, token),
 
     onMutate: (id) => {
       const previousData = queryClient.getQueryData(["posts"]);
